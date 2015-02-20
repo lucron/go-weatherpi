@@ -11,7 +11,7 @@ import (
 // returns an *rrd.Updater. Creates a new empty rrd if necessary.
 func CreateOrOpenDB(f string) *rrd.Updater {
 	if _, err := os.Stat(f); err == nil {
-		log.Println("pened existing db", f)
+		log.Println("opened existing db", f)
 		return rrd.NewUpdater(f)
 	}
 	c := rrd.NewCreator(f, time.Now(), 300)
