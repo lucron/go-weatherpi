@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"log"
+	"net/http"
 	"strings"
 	"sync"
 
@@ -22,6 +23,9 @@ func main() {
 	reader := bufio.NewReader(s)
 	wg.Add(1)
 	go ReadAndWriteData(u, reader)
+	_ = exportData("weather.rrd")
+	http.HandleFunc("/", serve)
+	http.ListenAndServe(":80", nil)
 	wg.Wait()
 }
 
@@ -33,5 +37,6 @@ func ReadAndWriteData(u *rrd.Updater, reader *bufio.Reader) {
 			log.Println(err)
 		}
 		log.Println("got data:", data)
+		writeData(u, data)
 	}
 }

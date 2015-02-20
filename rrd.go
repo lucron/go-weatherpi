@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"os"
+	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/ziutek/rrd"
@@ -35,4 +37,23 @@ func CreateOrOpenDB(f string) *rrd.Updater {
 	}
 	log.Println("created new db", f)
 	return rrd.NewUpdater(f)
+}
+
+func writeData(u *rrd.Updater, raw string) {
+	values := strings.Split(raw, ";")
+	//values are 3*n for temp, 11+n for hum
+	log.Println("temp1: %s - hum1: %s\n", values[3], values[11])
+	//rrd doesnt like ","
+	err := u.Update(time.Now(), strings.Replace(values[3], ",", ".", -1), values[11])
+	if err != nil {
+		log.Println("Error updating DB:", err.Error())
+	}
+}
+
+func exportData(f string) []byte {
+	out, err := exec.Command("rrdtool", "xport", "-s", "now-3h", "--step", "300", "DEF:a="+f+":temp1:AVERAGE", "XPORT:a:\"moep\"").CombinedOutput()
+	if err != nil {
+		log.Println("Error exporting data:", err.Error())
+	}
+	return out
 }
