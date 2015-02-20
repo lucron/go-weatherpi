@@ -51,7 +51,7 @@ func writeData(u *rrd.Updater, raw string) {
 }
 
 func exportData(f string) []byte {
-	out, err := exec.Command("rrdtool", "xport", "-s", "now-3h", "--step", "300", "DEF:a="+f+":temp1:AVERAGE", "XPORT:a:\"moep\"").CombinedOutput()
+	out, err := exec.Command("rrdtool", "xport", "-s", "now-48h", "--step", "300", "DEF:a="+f+":temp1:AVERAGE", "XPORT:a:\"moep\"").CombinedOutput()
 	if err != nil {
 		log.Println("Error exporting data:", err.Error())
 	}

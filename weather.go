@@ -7,6 +7,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/gorilla/mux"
 	"github.com/tarm/goserial"
 	"github.com/ziutek/rrd"
 )
@@ -23,12 +24,14 @@ func main() {
 	reader := bufio.NewReader(s)
 	wg.Add(1)
 	go ReadAndWriteData(u, reader)
-	_ = exportData("weather.rrd")
-	http.HandleFunc("/", serve)
-	http.ListenAndServe(":80", nil)
+
+	r := mux.NewRouter()
+	r.Handle("/static/{dummy}", http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
+	r.HandleFunc("/", serve)
+	r.HandleFunc("/data", data)
+	http.ListenAndServe(":80", r)
 	wg.Wait()
 }
-
 func ReadAndWriteData(u *rrd.Updater, reader *bufio.Reader) {
 	for {
 		data, err := reader.ReadString('\n')
