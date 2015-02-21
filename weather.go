@@ -28,7 +28,8 @@ func main() {
 	r := mux.NewRouter()
 	r.Handle("/static/{dummy}", http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
 	r.HandleFunc("/", serve)
-	r.HandleFunc("/data", data)
+	r.HandleFunc("/{dummy}", serve)
+	r.HandleFunc("/data/{type}/{val}", data)
 	http.ListenAndServe(":80", r)
 	wg.Wait()
 }

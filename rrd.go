@@ -50,8 +50,16 @@ func writeData(u *rrd.Updater, raw string) {
 	}
 }
 
-func exportData(f string) []byte {
-	out, err := exec.Command("rrdtool", "xport", "-s", "now-48h", "--step", "300", "DEF:a="+f+":temp1:AVERAGE", "XPORT:a:\"moep\"").CombinedOutput()
+func exportData(f string, delta string, dataType string) []byte {
+	stepWidth := "300"
+	if strings.HasSuffix(delta, "h") {
+		stepWidth = "300"
+	} else if strings.HasSuffix(delta, "month") {
+		stepWidth = "10800"
+	} else if strings.HasSuffix(delta, "year") {
+		stepWidth = "43200"
+	}
+	out, err := exec.Command("rrdtool", "xport", "-s", "now-"+delta, "--step", stepWidth, "DEF:a="+f+":"+dataType+"1:AVERAGE", "XPORT:a:\"moep\"").CombinedOutput()
 	if err != nil {
 		log.Println("Error exporting data:", err.Error())
 	}

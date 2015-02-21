@@ -31,9 +31,19 @@
 		<div class="row">
 			<div class="col-sm-2 sidebar">
 				<ul class="well nav nav-sidebar">
-					<li class="active"><a href="#">24h<span class="sr-only"></span></a></li>
-					<li><a href="#">1w</a></li>
-					<li><a href=#"">1y</a></li>
+					Temperature
+					<li><a href="temp?1h">1h</a></li>
+					<li><a href="temp?3h">3h</a></li>
+					<li><a href="temp?24h">24h</a></li>
+					<li><a href="temp?1month">1 Month</a></li>
+				</ul>
+				<ul class="well nav nav-sidebar">
+					Humidity
+					<li><a href="hum?1h">1h</a></li>
+					<li><a href="hum?3h">3h</a></li>
+					<li><a href="hum?24h">24h</a></li>
+					<li><a href="hum?1month">1 Month</a></li>
+
 				</ul>
 			</div>
 			<div class="col-sm-10 content" id="content">
@@ -45,14 +55,15 @@
 
 
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highcharts/2.3.5/highcharts.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.1/highcharts.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.1/themes/dark-unica.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="static/chart.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
         $.ajax({
           type: "GET",
-          url: "data",
+          url: GetChartXml(),
           dataType: "xml",
           success: function(xml) {
             var series = []

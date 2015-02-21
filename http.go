@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+
+	"github.com/gorilla/mux"
 )
 
 func serve(w http.ResponseWriter, r *http.Request) {
@@ -17,6 +19,10 @@ func serve(w http.ResponseWriter, r *http.Request) {
 }
 
 func data(w http.ResponseWriter, r *http.Request) {
-	data := exportData("weather.rrd")
+	vars := mux.Vars(r)
+	dataType := vars["type"]
+	_ = dataType
+	val := vars["val"]
+	data := exportData("weather.rrd", val, dataType)
 	io.WriteString(w, string(data))
 }
